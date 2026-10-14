@@ -29,10 +29,58 @@ NumTransDlg::NumTransDlg(QWidget *parent)
     editLayout->addWidget(hexEdit,1,1);
     editLayout->addWidget(binLabel,2,0);
     editLayout->addWidget(binEdit,2,1);
-    QPushButton* exitButton = new QPushButton("結束");
+    /*QPushButton* */ exitButton = new QPushButton("結束");
     buttonLayout->addStretch();
     buttonLayout->addWidget(exitButton);
+
+    connect(exitButton,SIGNAL(clicked()),this,SLOT(accept()));
+    connect(decEdit,SIGNAL(textChanged(QString)),
+            this,SLOT(decChanged(QString)));
+    connect(hexEdit,SIGNAL(textChanged(QString)),
+            this,SLOT(hexChanged(QString)));
+    connect(binEdit,SIGNAL(textChanged(QString)),
+            this,SLOT(binChanged(QString)));
 
 }
 
 NumTransDlg::~NumTransDlg() = default;
+void NumTransDlg::decChanged(const QString newValue){
+    bool ok;
+    int num = newValue.toInt(&ok,10);
+    if(ok){
+        hexEdit->setText(QString::number(num,16));
+        binEdit->setText(QString::number(num,2));
+    }
+    else{
+        hexEdit->setText("???");
+        binEdit->setText("???");
+    }
+    qDebug() << decEdit->text();
+    qDebug() << exitButton->text();
+
+}
+void NumTransDlg::hexChanged(QString newValue){
+    bool ok;
+    int num = newValue.toInt(&ok,16);
+    if(ok){
+        decEdit->setText(QString::number(num,10));
+        binEdit->setText(QString::number(num,2));
+    }
+    else{
+        decEdit->setText("???");
+        binEdit->setText("???");
+    }
+}
+void NumTransDlg::binChanged(QString newValue){
+    bool ok;
+    int num = newValue.toInt(&ok,2);
+    if(ok){
+        hexEdit->setText(QString::number(num,16));
+        decEdit->setText(QString::number(num,10));
+
+    }
+    else{
+        hexEdit->setText("???");
+        decEdit->setText("???");
+    }
+}
